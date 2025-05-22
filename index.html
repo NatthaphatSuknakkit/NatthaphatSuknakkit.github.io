@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ซองจดหมาย</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@600&display=swap');
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffe6f0, #ffd9e8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Kanit', sans-serif;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      width: 350px;
+      height: 220px;
+      perspective: 1400px;
+    }
+
+    .envelope {
+      position: relative;
+      width: 350px;
+      height: 220px;
+      background: linear-gradient(145deg, #fff0f6, #f8d7e1);
+      border-radius: 24px;
+      box-shadow: 0 10px 25px rgba(255, 105, 180, 0.25), inset 0 4px 10px rgba(255, 240, 250, 0.9);
+      cursor: pointer;
+      transition: transform 0.6s ease;
+      transform-style: preserve-3d;
+      z-index: 30;
+    }
+
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 350px;
+      height: 110px;
+      background: linear-gradient(145deg, #ffb6c1, #f48fb1);
+      border-radius: 24px 24px 0 0;
+      transform-origin: bottom center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 40;
+    }
+
+    .to-text {
+      position: absolute;
+      bottom: 12px;
+      left: 15px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #7a2c53;
+    }
+
+    .heart {
+      position: absolute;
+      top: 45px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at center, #f48fb1, #c94f4f);
+      color: white;
+      font-size: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .message {
+      position: absolute;
+      top: 110px;
+      left: 50%;
+      width: 340px;
+      padding: 30px;
+      background: #fff8fc;
+      border-radius: 30px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #9c416d;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      transform: translate(-50%, 0);
+    }
+
+    .message.show {
+      opacity: 1;
+    }
+
+    .envelope.open .flap {
+      transform: rotateX(-120deg);
+    }
+
+    .floating-heart {
+      position: absolute;
+      font-size: 24px;
+      animation: floatHeart 6s linear forwards;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes floatHeart {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(var(--scale, 1));
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100vh) scale(var(--scale, 1));
+      }
+    }
+
+    .floating-image {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      animation: floatImage 7s linear forwards;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes floatImage {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100vh) scale(1.2);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="envelope" id="envelope" onclick="toggleEnvelope()">
+      <div class="flap"></div>
+      <div class="to-text">To: กัญพิชา🤍</div>
+      <div class="heart">♥</div>
+    </div>
+
+    <div class="message" id="message">
+      <br><br><br>
+      ในโอกาสพิเศษนี้ ขอให้คุณมีแต่ความสุขสมหวังในทุกๆ ด้านของชีวิต ไม่ว่าจะเป็นเรื่องงาน การเรียน หรือความรัก ขอให้ทุกความพยายามที่คุณทุ่มเทลงไป ได้รับผลตอบแทนที่ดีเสมอ 💖
+    </div>
+  </div>
+
+  <audio id="bg-music" src="hbd.mp3"></audio>
+
+<script>
+  let isOpen = false;
+  let heartInterval, imageInterval;
+  let isBig = true; // ใช้สลับขนาด
+
+  function getRandom(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('floating-heart');
+    heart.textContent = '💖';
+
+    // สลับขนาดใหญ่เล็ก
+    const scale = isBig ? getRandom(1.2, 1.6) : getRandom(0.6, 0.9);
+    isBig = !isBig;
+    heart.style.setProperty('--scale', scale);
+
+    heart.style.left = `${getRandom(0, window.innerWidth - 40)}px`;
+    heart.style.top = `${window.innerHeight}px`;
+
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+  }
+
+  function createFloatingImage() {
+    const img = document.createElement('img');
+    img.src = 'no.png';
+    img.className = 'floating-image';
+
+    // สลับขนาดใหญ่เล็ก
+    const scale = isBig ? getRandom(1.2, 1.5) : getRandom(0.7, 1.0);
+    isBig = !isBig;
+    img.style.transform = `scale(${scale})`;
+
+    img.style.left = `${getRandom(0, window.innerWidth - 40)}px`;
+    img.style.top = `${window.innerHeight}px`;
+
+    document.body.appendChild(img);
+    setTimeout(() => img.remove(), 7000);
+  }
+
+  function startFloating() {
+    heartInterval = setInterval(createHeart, 200);
+    imageInterval = setInterval(createFloatingImage, 500);
+  }
+
+  function stopFloating() {
+    clearInterval(heartInterval);
+    clearInterval(imageInterval);
+  }
+
+  function toggleEnvelope() {
+    const envelope = document.getElementById('envelope');
+    const message = document.getElementById('message');
+    const music = document.getElementById('bg-music');
+
+    if (!isOpen) {
+      envelope.classList.add('open');
+      setTimeout(() => {
+        message.classList.add('show');
+        startFloating();
+        music.play();
+      }, 700);
+    } else {
+      message.classList.remove('show');
+      setTimeout(() => {
+        envelope.classList.remove('open');
+      }, 500);
+      stopFloating();
+      music.pause();
+      music.currentTime = 0;
+    }
+
+    isOpen = !isOpen;
+  }
+</script>
+</body>
+</html>

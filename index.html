@@ -15,8 +15,8 @@
       justify-content: center;
       align-items: center;
       font-family: 'Kanit', sans-serif;
-      user-select: none;
       overflow: hidden;
+      user-select: none;
     }
 
     .container {
@@ -62,39 +62,70 @@
     }
 
     .heart {
+  position: absolute;
+  top: 20px; /* ← ปรับตรงนี้ให้ลอยสูงขึ้น */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 70px;
+  background: radial-gradient(circle at 30% 30%, #ff90b3, #d6336c);
+  box-shadow:
+    inset 0 4px 8px rgba(255, 255, 255, 0.3),
+    0 4px 12px rgba(214, 51, 108, 0.4);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  animation: pulse 1.8s ease-in-out infinite;
+  z-index: 45;
+  transition: transform 0.3s ease;
+}
+.heart:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.1); }
+}
+    .ribbon {
       position: absolute;
-      top: 45px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 60px;
-      background: radial-gradient(circle at center, #f48fb1, #c94f4f);
+      top: 35px;
+      right: -25px;
+      background: #ff9bb3;
       color: white;
-      font-size: 32px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      padding: 4px 20px;
+      font-size: 12px;
+      font-weight: bold;
+      transform: rotate(45deg);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 50;
     }
 
     .message {
-  position: absolute;
-  top: 110px;
-  left: 50%;
-  width: 340px;
-  max-height: 300px; /* เพิ่มความสูงสูงสุด */
-  padding: 30px;
-  background: #fff8fc;
-  border-radius: 30px;
-  font-size: 24px;
-  font-weight: 700;
-  color: #9c416d;
-  text-align: center;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-  transform: translate(-50%, 0);
-  overflow: auto; /* ให้เลื่อนเมื่อข้อความยาว */
-  z-index: 100; /* ให้ข้อความอยู่เหนือ floating image */
-}
+      position: absolute;
+      top: 110px;
+      left: 50%;
+      width: 340px;
+      max-height: 300px;
+      padding: 30px;
+      background: #fff8fc;
+      border-radius: 30px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #9c416d;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      transform: translate(-50%, 0);
+      overflow: auto;
+      z-index: 100;
+    }
+
     .message.show {
       opacity: 1;
     }
@@ -103,43 +134,81 @@
       transform: rotateX(-120deg);
     }
 
-    .floating-heart {
+    .floating-heart,
+    .floating-image,
+    .glitter {
       position: absolute;
-      font-size: 24px;
-      animation: floatHeart 6s linear forwards;
-      opacity: 0;
       pointer-events: none;
     }
 
+    .floating-heart {
+      font-size: 24px;
+      animation: floatHeart 6s linear forwards;
+      opacity: 0;
+    }
+
     @keyframes floatHeart {
-      0% {
-        opacity: 1;
-        transform: translateY(0) scale(var(--scale, 1));
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-100vh) scale(var(--scale, 1));
-      }
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-100vh); }
     }
 
     .floating-image {
-      position: absolute;
       width: 100px;
       height: 100px;
       animation: floatImage 7s linear forwards;
       opacity: 0;
-      pointer-events: none;
     }
 
     @keyframes floatImage {
-      0% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(-100vh) scale(1.2);
-      }
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-100vh) scale(1.2); }
+    }
+
+    .glitter {
+      width: 4px;
+      height: 4px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      animation: glitterSparkle 2s infinite ease-in-out;
+      z-index: 90;
+    }
+
+    @keyframes glitterSparkle {
+      0%, 100% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    .typing {
+      display: inline-block;
+      white-space: pre-wrap;
+      overflow: hidden;
+      border-right: .15em solid #ff94b6;
+      animation: blink-caret 0.8s step-end infinite;
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: #ff94b6; }
+    }
+
+    /* 👇 เพิ่มข้อความ “คลิกเพื่อเปิดจดหมาย 💌” */
+    .click-hint {
+      position: absolute;
+      top: calc(50% + 130px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      color: #c94f7c;
+      font-weight: bold;
+      animation: bounce 1.6s infinite;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -8px); }
     }
   </style>
 </head>
@@ -148,42 +217,46 @@
   <div class="container">
     <div class="envelope" id="envelope" onclick="toggleEnvelope()">
       <div class="flap"></div>
+      <div class="ribbon">HBD 🎀</div>
       <div class="to-text">To: กัญพิชา🤍</div>
       <div class="heart">♥</div>
     </div>
 
     <div class="message" id="message">
-      <br>
-      Happy Birthday🎂 นะอ้วน 22 ขวบแล้วปีนี้ขอให้เทอมีความสุขมากๆนะ ฝึกสอนปีนี้ขอให้เทอผ่านไปได้ด้วยดีขอให้ไม่เหนื่อยทั้งปีเลยและเทอก็ดูแลตัวเองดีๆนะเค้ารู้ว่าเทอเก่งเทอทำได้อยู่แล้วถ้าเทอมีอะไรให้เค้าช่วยก็บอกได้ตลอดนะ✌
-
-ถึงเราจะไม่ได้เป็นอะไรกันแล้วเค้าก็ยังหวังดีกับเทอเสมอยังอยากคอยซับพอตให้กันเหมือนเดิมถ้ามันมีโอกาสเค้าก็อยากกลับไปเหมือนเดิมยังรักยังคิดถึงเทอตลอดที่ผ่านมามันดีมากๆเลยเค้าไม่โกรธอะไรเทอเลยอยากขอบคุณอะไรหลายๆอย่างที่ผ่านมาเค้าผิดในหลายๆเรื่องเค้ายังอยากไปเที่ยวด้วยกันอีกอยากไปหาอะไรกินด้วยกันอีกเยอะๆแต่ถ้าครั้งหน้าได้กลับมาจริงๆเค้าก็อยากสัญญาว่าจะไม่ทำให้เสียใจกับเรื่องเดิมๆอีกเค้ารักเทอนะ💗
+      <span id="typing-text" class="typing"></span>
     </div>
   </div>
+
+  <!-- ✅ เพิ่มข้อความคลิก -->
+  <div class="click-hint" id="clickHint">กดเพื่อเปิดจดหมาย 💌</div>
 
   <audio id="bg-music" src="hbd.mp3"></audio>
 
 <script>
   let isOpen = false;
-  let heartInterval, imageInterval;
-  let isBig = true; // ใช้สลับขนาด
+  let heartInterval, imageInterval, glitterInterval;
 
-  function getRandom(min, max) {
-    return Math.random() * (max - min) + min;
+  const fullMessage = `Happy Birthday🎂 นะอ้วน 22 ขวบแล้วปีนี้ขอให้เทอมีความสุขมากๆนะ ฝึกสอนปีนี้ขอให้เทอผ่านไปได้ด้วยดี ขอให้ไม่เหนื่อยทั้งปีเลยและเทอก็ดูแลตัวเองดีๆนะ เค้ารู้ว่าเทอเก่งเทอทำได้อยู่แล้ว ถ้าเทอมีอะไรให้เค้าช่วยก็บอกได้ตลอดนะ✌
+
+ถึงเราจะไม่ได้เป็นอะไรกันแล้ว เค้าก็ยังหวังดีกับเทอเสมอ ยังอยากคอยซับพอตให้กันเหมือนเดิม ถ้ามันมีโอกาส เค้าก็อยากกลับไปเหมือนเดิม ยังรักยังคิดถึงเทอตลอด ที่ผ่านมามันดีมากๆเลย เค้าไม่โกรธอะไรเทอเลย อยากขอบคุณอะไรหลายๆอย่างที่ผ่านมา เค้าผิดในหลายๆเรื่อง เค้ายังอยากไปเที่ยวด้วยกันอีก อยากไปหาอะไรกินด้วยกันอีกเยอะๆ แต่ถ้าครั้งหน้าได้กลับมาจริงๆ เค้าก็อยากสัญญาว่าจะไม่ทำให้เสียใจกับเรื่องเดิมๆอีก เค้ารักเทอนะ💗`;
+
+  function typeMessage() {
+    const el = document.getElementById("typing-text");
+    let i = 0;
+    el.textContent = "";
+    const interval = setInterval(() => {
+      el.textContent += fullMessage[i];
+      i++;
+      if (i >= fullMessage.length) clearInterval(interval);
+    }, 20);
   }
 
   function createHeart() {
     const heart = document.createElement('div');
     heart.classList.add('floating-heart');
     heart.textContent = '💖';
-
-    // สลับขนาดใหญ่เล็ก
-    const scale = isBig ? getRandom(1.2, 1.6) : getRandom(0.6, 0.9);
-    isBig = !isBig;
-    heart.style.setProperty('--scale', scale);
-
-    heart.style.left = `${getRandom(0, window.innerWidth - 40)}px`;
+    heart.style.left = `${Math.random() * window.innerWidth}px`;
     heart.style.top = `${window.innerHeight}px`;
-
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 6000);
   }
@@ -192,38 +265,45 @@
     const img = document.createElement('img');
     img.src = 'no.png';
     img.className = 'floating-image';
-
-    // สลับขนาดใหญ่เล็ก
-    const scale = isBig ? getRandom(1.2, 1.5) : getRandom(0.7, 1.0);
-    isBig = !isBig;
-    img.style.transform = `scale(${scale})`;
-
-    img.style.left = `${getRandom(0, window.innerWidth - 40)}px`;
+    img.style.left = `${Math.random() * window.innerWidth}px`;
     img.style.top = `${window.innerHeight}px`;
-
     document.body.appendChild(img);
     setTimeout(() => img.remove(), 7000);
   }
 
+  function createGlitter() {
+    const glitter = document.createElement('div');
+    glitter.className = 'glitter';
+    glitter.style.left = `${Math.random() * window.innerWidth}px`;
+    glitter.style.top = `${Math.random() * window.innerHeight}px`;
+    document.body.appendChild(glitter);
+    setTimeout(() => glitter.remove(), 2000);
+  }
+
   function startFloating() {
     heartInterval = setInterval(createHeart, 200);
-    imageInterval = setInterval(createFloatingImage, 500);
+    imageInterval = setInterval(createFloatingImage, 600);
+    glitterInterval = setInterval(createGlitter, 300);
   }
 
   function stopFloating() {
     clearInterval(heartInterval);
     clearInterval(imageInterval);
+    clearInterval(glitterInterval);
   }
 
   function toggleEnvelope() {
     const envelope = document.getElementById('envelope');
     const message = document.getElementById('message');
     const music = document.getElementById('bg-music');
+    const clickHint = document.getElementById('clickHint');
 
     if (!isOpen) {
       envelope.classList.add('open');
+      clickHint.style.display = 'none';
       setTimeout(() => {
         message.classList.add('show');
+        typeMessage();
         startFloating();
         music.play();
       }, 700);
@@ -231,6 +311,7 @@
       message.classList.remove('show');
       setTimeout(() => {
         envelope.classList.remove('open');
+        clickHint.style.display = 'block';
       }, 500);
       stopFloating();
       music.pause();
